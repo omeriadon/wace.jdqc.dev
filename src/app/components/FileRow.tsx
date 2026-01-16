@@ -60,9 +60,10 @@ export default function FileRow({
     console.log("FileRow: preview clicked", { item });
     e.stopPropagation();
     // If CDN is configured, preview directly from CDN; otherwise use API preview
-    const fileUrl = (CDN_BASE && !item.isDirectory)
-      ? buildFileUrl(item.cdnPath || item.path)
-      : `/api/download?path=${encodeURIComponent(item.path)}&preview=true`;
+    const fileUrl =
+      CDN_BASE && !item.isDirectory
+        ? buildFileUrl(item.cdnPath || item.path)
+        : `/api/download?path=${encodeURIComponent(item.path)}&preview=true`;
 
     addFile({
       name: item.displayName,
@@ -120,7 +121,11 @@ export default function FileRow({
           </a>
         ) : (
           <a
-            href={CDN_BASE ? buildFileUrl(item.cdnPath || item.path) : `/api/download?path=${encodeURIComponent(item.path)}`}
+            href={
+              CDN_BASE
+                ? buildFileUrl(item.cdnPath || item.path)
+                : `/api/download?path=${encodeURIComponent(item.path)}`
+            }
             className={styles.downloadButton}
             onClick={(e) => {
               e.stopPropagation();

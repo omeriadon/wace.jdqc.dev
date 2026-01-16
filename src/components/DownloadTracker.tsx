@@ -11,13 +11,18 @@ export default function DownloadTracker({ className }: { className?: string }) {
       try {
         console.log("DownloadTracker: fetching /api/downloads");
         const res = await fetch("/api/downloads");
-        console.log("DownloadTracker: response", { ok: res.ok, status: res.status });
+        console.log("DownloadTracker: response", {
+          ok: res.ok,
+          status: res.status,
+        });
         if (res.ok) {
           const data = await res.json();
           console.log("DownloadTracker: data", data);
           setCount(data.count);
         } else {
-          console.warn("DownloadTracker: failed response", { status: res.status });
+          console.warn("DownloadTracker: failed response", {
+            status: res.status,
+          });
         }
       } catch (err) {
         console.error("Failed to fetch downloads:", err);

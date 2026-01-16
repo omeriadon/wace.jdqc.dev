@@ -25,7 +25,10 @@ export default function VisitorTracker({ className }: { className?: string }) {
           console.log("visit");
         }
 
-        console.log("VisitorTracker: response", { ok: res.ok, status: res.status });
+        console.log("VisitorTracker: response", {
+          ok: res.ok,
+          status: res.status,
+        });
         if (res.ok) {
           const data = await res.json();
           console.log("VisitorTracker: data", data);

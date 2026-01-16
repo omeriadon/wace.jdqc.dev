@@ -23,7 +23,15 @@ export async function GET(request: NextRequest) {
   const baseDir = path.join(process.cwd(), "public", TEXTBOOKS_DIR);
   const fullPath = path.join(baseDir, safePath);
 
-  console.log("/api/download incoming", { ip, relativePath, safePath, isPreview, TEXTBOOKS_DIR, baseDir, fullPath });
+  console.log("/api/download incoming", {
+    ip,
+    relativePath,
+    safePath,
+    isPreview,
+    TEXTBOOKS_DIR,
+    baseDir,
+    fullPath,
+  });
 
   try {
     await fs.promises.access(fullPath);

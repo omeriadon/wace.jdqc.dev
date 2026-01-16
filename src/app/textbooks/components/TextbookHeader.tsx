@@ -92,7 +92,9 @@ export default function TextbookHeader({
       )}
       {query && (
         <div className={styles.breadcrumbs}>
-          <span className={styles.title}>Search results for &ldquo;{query}&rdquo;</span>
+          <span className={styles.title}>
+            Search results for &ldquo;{query}&rdquo;
+          </span>
         </div>
       )}
     </div>

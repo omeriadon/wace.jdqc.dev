@@ -20,15 +20,18 @@ export default function Home() {
       />
 
       <h2 className={`${styles.subtitle} ${styles.container}`}>
-				<div>No it&apos;s not.</div>
-				<br />
+        <div>No it&apos;s not.</div>
+        <br />
 
-				<div>
-					So we &quot;borrowed&quot; all (most) of the textbooks you need for next year.
-				</div>
-				<br />
-				<div>Yes, it&apos;s just the pdfs, you don&apos;t need the paper version.</div>
-		</h2>
+        <div>
+          So we &quot;borrowed&quot; all (most) of the textbooks you need for
+          next year.
+        </div>
+        <br />
+        <div>
+          Yes, it&apos;s just the pdfs, you don&apos;t need the paper version.
+        </div>
+      </h2>
 
       <VisitorTracker className={styles.visitorCount} />
       <DownloadTracker className={styles.visitorCount} />

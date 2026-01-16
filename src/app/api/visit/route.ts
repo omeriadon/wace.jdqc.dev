@@ -6,10 +6,16 @@ const EXTERNAL_API = "http://203.17.177.58:4167";
 
 export async function POST() {
   try {
-    console.log("/api/visit POST: proxying to external API", { url: `${EXTERNAL_API}/increment` });
+    console.log("/api/visit POST: proxying to external API", {
+      url: `${EXTERNAL_API}/increment`,
+    });
     const res = await fetch(`${EXTERNAL_API}/increment`, { method: "POST" });
     const text = await res.text();
-    console.log("/api/visit POST: response", { ok: res.ok, status: res.status, body: text });
+    console.log("/api/visit POST: response", {
+      ok: res.ok,
+      status: res.status,
+      body: text,
+    });
     const count = parseInt(text, 10);
 
     return NextResponse.json({ count });
@@ -21,10 +27,16 @@ export async function POST() {
 
 export async function GET() {
   try {
-    console.log("/api/visit GET: proxying to external API", { url: `${EXTERNAL_API}/visitors` });
+    console.log("/api/visit GET: proxying to external API", {
+      url: `${EXTERNAL_API}/visitors`,
+    });
     const res = await fetch(`${EXTERNAL_API}/visitors`, { cache: "no-store" });
     const text = await res.text();
-    console.log("/api/visit GET: response", { ok: res.ok, status: res.status, body: text });
+    console.log("/api/visit GET: response", {
+      ok: res.ok,
+      status: res.status,
+      body: text,
+    });
     const count = parseInt(text, 10);
 
     return NextResponse.json({ count });

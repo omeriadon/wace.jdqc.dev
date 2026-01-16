@@ -8,7 +8,11 @@ import React, {
   useEffect,
 } from "react";
 
-import { toRelativePath, BOOKLIST_PATH, isBooklistPath } from "../lib/cdn-utils";
+import {
+  toRelativePath,
+  BOOKLIST_PATH,
+  isBooklistPath,
+} from "../lib/cdn-utils";
 
 export interface PdfFile {
   name: string;
@@ -40,7 +44,8 @@ export function PdfProvider({ children }: { children: ReactNode }) {
         const hasBooklist = parsed.some(
           (f: PdfFile) => toRelativePath(f.url) === BOOKLIST_PATH,
         );
-        if (!hasBooklist) parsed.unshift({ name: "Booklist", url: BOOKLIST_PATH });
+        if (!hasBooklist)
+          parsed.unshift({ name: "Booklist", url: BOOKLIST_PATH });
         return parsed;
       }
     } catch {
@@ -78,7 +83,10 @@ export function PdfProvider({ children }: { children: ReactNode }) {
 
   const addFile = (file: PdfFile) => {
     const normalizedUrl = toRelativePath(file.url);
-    console.log("PdfContext.addFile", { original: file.url, normalized: normalizedUrl });
+    console.log("PdfContext.addFile", {
+      original: file.url,
+      normalized: normalizedUrl,
+    });
     setFiles((prev) => {
       if (prev.some((f) => toRelativePath(f.url) === normalizedUrl))
         return prev;

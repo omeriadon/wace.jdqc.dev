@@ -8,9 +8,9 @@ export default function RateLimitPage() {
       <AlertCircle className={styles.icon} size={64} />
       <h1 className={styles.title}>Too many textbooks?</h1>
       <p className={styles.message}>
-        You&apos;ve downloaded a lot of textbooks recently. To ensure fair usage for
-        everyone, we&apos;ve temporarily paused your downloads. Please try again in
-        an hour.
+        You&apos;ve downloaded a lot of textbooks recently. To ensure fair usage
+        for everyone, we&apos;ve temporarily paused your downloads. Please try
+        again in an hour.
       </p>
       <Link href="/textbooks" className={styles.button}>
         Return to Textbooks

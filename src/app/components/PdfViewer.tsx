@@ -11,20 +11,23 @@ import { buildFileUrl, toRelativePath, isBooklistPath } from "@/lib/cdn-utils";
 
 // Worker candidate from CDN or public fonts (checked at runtime)
 const defaultWorkerCandidate = buildFileUrl("fonts/pdf.worker.min.js");
-const PDFJS_FALLBACK_WORKER = "https://unpkg.com/pdfjs-dist@3.6.172/build/pdf.worker.min.js"; // conservative fallback
-
-
+const PDFJS_FALLBACK_WORKER =
+  "https://unpkg.com/pdfjs-dist@3.6.172/build/pdf.worker.min.js"; // conservative fallback
 
 export default function PdfViewer() {
   const { files, activeFile, setActive, removeFile } = usePdf();
   const [theme, setTheme] = useState<string>(() => {
     if (typeof window !== "undefined") {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
     }
     return "light";
   });
 
-  const [workerUrlState, setWorkerUrlState] = useState<string | undefined>(defaultWorkerCandidate);
+  const [workerUrlState, setWorkerUrlState] = useState<string | undefined>(
+    defaultWorkerCandidate,
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -58,10 +61,9 @@ export default function PdfViewer() {
     };
   }, []);
 
-
-	useEffect(() => {
-		if (typeof window !== "undefined") {
-			const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       const handleChange = (e: MediaQueryListEvent) => {
         setTheme(e.matches ? "dark" : "light");
       };
@@ -77,10 +79,13 @@ export default function PdfViewer() {
       <Toolbar>
         {(slots: unknown) => {
           const s = slots as Record<string, React.ComponentType<unknown>>;
-          const CurrentPageInput = s.CurrentPageInput as React.ComponentType<unknown>;
+          const CurrentPageInput =
+            s.CurrentPageInput as React.ComponentType<unknown>;
           const GoToNextPage = s.GoToNextPage as React.ComponentType<unknown>;
-          const GoToPreviousPage = s.GoToPreviousPage as React.ComponentType<unknown>;
-          const ShowSearchPopover = s.ShowSearchPopover as React.ComponentType<unknown>;
+          const GoToPreviousPage =
+            s.GoToPreviousPage as React.ComponentType<unknown>;
+          const ShowSearchPopover =
+            s.ShowSearchPopover as React.ComponentType<unknown>;
           const Zoom = s.Zoom as React.ComponentType<unknown>;
           const ZoomIn = s.ZoomIn as React.ComponentType<unknown>;
           const ZoomOut = s.ZoomOut as React.ComponentType<unknown>;
@@ -170,7 +175,7 @@ export default function PdfViewer() {
         ))}
       </div>
       <div className={styles.content}>
-        {activePdf && (
+        {activePdf &&
           (workerUrlState ? (
             <Worker workerUrl={workerUrlState}>
               <div
@@ -203,8 +208,7 @@ export default function PdfViewer() {
                 theme={theme}
               />
             </div>
-          ))
-        )}
+          ))}
       </div>
     </div>
   );
