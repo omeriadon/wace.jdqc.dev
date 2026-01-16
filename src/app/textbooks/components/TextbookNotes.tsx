@@ -1,5 +1,5 @@
 import styles from "../Textbook.module.css";
-import { InfoIcon } from "@/components/Icons";
+import { InfoIcon } from "@/app/components/Icons";
 
 interface TextbookNotesProps {
   noteContents: string[];

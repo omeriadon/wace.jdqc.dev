@@ -1,8 +1,8 @@
 import styles from "./Home.module.css";
 import Link from "next/link";
-import BlurText from "@/components/BlurText";
-import VisitorTracker from "@/components/VisitorTracker";
-import DownloadTracker from "@/components/DownloadTracker";
+import BlurText from "./components/BlurText";
+import VisitorTracker from "@/app/components/VisitorTracker";
+import DownloadTracker from "@/app/components/DownloadTracker";
 import { buildFileUrl, BOOKLIST_PATH } from "@/lib/cdn-utils";
 
 export default function Home() {

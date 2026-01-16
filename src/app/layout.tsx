@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer";
 import ClientWrapper from "./ClientWrapper";
 import { PdfProvider } from "@/context/PdfContext";
-import PdfViewerWrapper from "./components/PdfViewerWrapper";
+import PdfViewerWrapper from "./components/PDFViewerWrapper/PdfViewerWrapper";
 
 export const metadata: Metadata = {
   title: "WACE Is Amazing",

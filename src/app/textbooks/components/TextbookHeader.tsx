@@ -1,7 +1,7 @@
 import Link from "next/link";
 import path from "path";
 import styles from "../Textbook.module.css";
-import BlurText from "../../../components/BlurText.jsx";
+import BlurText from "../../components/BlurText.jsx";
 import { formatName } from "@/lib/textbook-utils";
 
 interface TextbookHeaderProps {

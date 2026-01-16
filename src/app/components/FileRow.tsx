@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import styles from "../textbooks/Textbook.module.css";
-import { FolderIcon, DocumentIcon, DownloadIcon } from "@/components/Icons";
+import { FolderIcon, DocumentIcon, DownloadIcon } from "@/app/components/Icons";
 import { usePdf } from "@/context/PdfContext";
 import { buildFileUrl, CDN_BASE } from "@/lib/cdn-utils";
 

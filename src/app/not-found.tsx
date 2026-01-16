@@ -1,6 +1,6 @@
 import Link from "next/link";
 import styles from "./textbooks/Textbook.module.css";
-import BlurText from "../components/BlurText.jsx";
+import BlurText from "./components/BlurText.jsx";
 
 export default function NotFound() {
   return (

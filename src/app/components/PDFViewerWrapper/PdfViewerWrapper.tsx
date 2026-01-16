@@ -6,7 +6,7 @@ import { usePdf } from "@/context/PdfContext";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "motion/react";
 
-const PdfViewer = dynamic(() => import("./PdfViewer"), { ssr: false });
+const PdfViewer = dynamic(() => import("../PDFViewer/PdfViewer"), { ssr: false });
 
 export default function PdfViewerWrapper({
   children,

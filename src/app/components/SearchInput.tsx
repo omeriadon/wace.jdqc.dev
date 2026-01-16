@@ -3,7 +3,7 @@
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useCallback, useRef, useEffect } from "react";
 import styles from "../textbooks/Textbook.module.css";
-import { SearchIcon } from "../../components/Icons";
+import { SearchIcon } from "./Icons";
 
 function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
