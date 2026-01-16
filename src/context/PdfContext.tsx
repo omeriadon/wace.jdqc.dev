@@ -8,6 +8,8 @@ import React, {
   useEffect,
 } from "react";
 
+import { toRelativePath, BOOKLIST_PATH, isBooklistPath } from "../lib/cdn-utils";
+
 export interface PdfFile {
   name: string;
   url: string;
@@ -27,50 +29,43 @@ interface PdfContextType {
 const PdfContext = createContext<PdfContextType | undefined>(undefined);
 
 export function PdfProvider({ children }: { children: ReactNode }) {
-  const [files, setFiles] = useState<PdfFile[]>([
-    {
-      name: "Booklist",
-      url: "/Perth Mod Booklist Year 11 2026.pdf",
-    },
-  ]);
-  const [activeFile, setActiveFile] = useState<string | null>(
-    "/Perth Mod Booklist Year 11 2026.pdf"
-  );
-  const [isOpen, setIsOpen] = useState(false);
-
-  // Load state from localStorage on mount
-  useEffect(() => {
-    const storedFiles = localStorage.getItem("pdf_files");
-    const storedActive = localStorage.getItem("pdf_active");
-    const storedIsOpen = localStorage.getItem("pdf_isOpen");
-
-    if (storedFiles) {
-      try {
-        const parsedFiles = JSON.parse(storedFiles);
-        // Ensure Booklist is always present
-        const hasBooklist = parsedFiles.some(
-          (f: PdfFile) => f.url === "/Perth Mod Booklist Year 11 2026.pdf"
+  const [files, setFiles] = useState<PdfFile[]>(() => {
+    try {
+      const stored = localStorage.getItem("pdf_files");
+      if (stored) {
+        const parsed = JSON.parse(stored).map((f: PdfFile) => ({
+          name: f.name,
+          url: toRelativePath(f.url),
+        }));
+        const hasBooklist = parsed.some(
+          (f: PdfFile) => toRelativePath(f.url) === BOOKLIST_PATH,
         );
-        if (!hasBooklist) {
-          parsedFiles.unshift({
-            name: "Booklist",
-            url: "/Perth Mod Booklist Year 11 2026.pdf",
-          });
-        }
-        setFiles(parsedFiles);
-      } catch (e) {
-        console.error("Failed to parse stored files", e);
+        if (!hasBooklist) parsed.unshift({ name: "Booklist", url: BOOKLIST_PATH });
+        return parsed;
       }
+    } catch {
+      // ignore parse errors
     }
+    return [{ name: "Booklist", url: BOOKLIST_PATH }];
+  });
 
-    if (storedActive) {
-      setActiveFile(storedActive);
+  const [activeFile, setActiveFile] = useState<string | null>(() => {
+    try {
+      const storedActive = localStorage.getItem("pdf_active");
+      return storedActive ? toRelativePath(storedActive) : BOOKLIST_PATH;
+    } catch {
+      return BOOKLIST_PATH;
     }
+  });
 
-    if (storedIsOpen) {
-      setIsOpen(storedIsOpen === "true");
+  const [isOpen, setIsOpen] = useState<boolean>(() => {
+    try {
+      const storedIsOpen = localStorage.getItem("pdf_isOpen");
+      return storedIsOpen ? storedIsOpen === "true" : false;
+    } catch {
+      return false;
     }
-  }, []);
+  });
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
@@ -82,23 +77,30 @@ export function PdfProvider({ children }: { children: ReactNode }) {
   }, [files, activeFile, isOpen]);
 
   const addFile = (file: PdfFile) => {
+    const normalizedUrl = toRelativePath(file.url);
+    console.log("PdfContext.addFile", { original: file.url, normalized: normalizedUrl });
     setFiles((prev) => {
-      if (prev.some((f) => f.url === file.url)) return prev;
-      return [...prev, file];
+      if (prev.some((f) => toRelativePath(f.url) === normalizedUrl))
+        return prev;
+      return [...prev, { ...file, url: normalizedUrl }];
     });
-    setActiveFile(file.url);
+    setActiveFile(normalizedUrl);
     setIsOpen(true);
   };
 
   const removeFile = (url: string) => {
     // Prevent removing the booklist
-    if (url === "/Perth Mod Booklist Year 11 2026.pdf") return;
+    if (isBooklistPath(url)) return;
+
+    const normalizedUrl = toRelativePath(url);
 
     setFiles((prev) => {
-      const newFiles = prev.filter((f) => f.url !== url);
-      if (activeFile === url) {
+      const newFiles = prev.filter(
+        (f) => toRelativePath(f.url) !== normalizedUrl,
+      );
+      if (toRelativePath(activeFile || "") === normalizedUrl) {
         setActiveFile(
-          newFiles.length > 0 ? newFiles[newFiles.length - 1].url : null
+          newFiles.length > 0 ? newFiles[newFiles.length - 1].url : null,
         );
       }
       return newFiles;
@@ -106,7 +108,9 @@ export function PdfProvider({ children }: { children: ReactNode }) {
   };
 
   const setActive = (url: string) => {
-    setActiveFile(url);
+    const normalized = toRelativePath(url);
+    console.log("PdfContext.setActive", { url, normalized });
+    setActiveFile(normalized);
   };
 
   const toggle = () => {

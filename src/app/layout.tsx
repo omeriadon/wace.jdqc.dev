@@ -7,26 +7,26 @@ import { PdfProvider } from "@/context/PdfContext";
 import PdfViewerWrapper from "./components/PdfViewerWrapper";
 
 export const metadata: Metadata = {
-	title: "WACE Is Amazing",
-	description: "No it's not.",
+  title: "WACE Is Amazing",
+  description: "No it's not.",
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{ children: React.ReactNode }>) {
-	return (
-		<html lang="en">
-			<body>
-				<PdfProvider>
-					<ClientWrapper>
-						<PdfViewerWrapper>
-							<Navbar />
-							<div className="pt-10 flex-1 w-full">{children}</div>
-							<Footer />
-						</PdfViewerWrapper>
-					</ClientWrapper>
-				</PdfProvider>
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en">
+      <body>
+        <PdfProvider>
+          <ClientWrapper>
+            <PdfViewerWrapper>
+              <Navbar />
+              <div className="pt-10 flex-1 w-full">{children}</div>
+              <Footer />
+            </PdfViewerWrapper>
+          </ClientWrapper>
+        </PdfProvider>
+      </body>
+    </html>
+  );
 }

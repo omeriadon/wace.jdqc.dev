@@ -1,8 +1,6 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-import fs from "fs";
-import path from "path";
 import styles from "./Textbook.module.css";
 import FileList from "../components/FileList";
 import SearchInput from "../components/SearchInput";
@@ -10,6 +8,7 @@ import TransitionWrapper from "../components/TransitionWrapper";
 import TextbookHeader from "./components/TextbookHeader";
 import TextbookNotes from "./components/TextbookNotes";
 import { formatName, formatSize } from "@/lib/textbook-utils";
+import { buildFileUrl } from "@/lib/cdn-utils";
 
 interface FileItem {
 	name: string;
@@ -17,81 +16,93 @@ interface FileItem {
 	path: string;
 	displayName: string;
 	size: string;
+	cdnPath?: string;
 }
 
-async function getFolderSize(dirPath: string): Promise<number> {
-	let totalSize = 0;
+async function fetchFromCdn({
+	safePath,
+	query,
+}: {
+	safePath: string;
+	query?: string;
+}): Promise<{
+	items: FileItem[];
+	noteContents: string[];
+	error: string | null;
+}> {
+	const noteContents: string[] = [];
+	let items: FileItem[] = [];
+	let error: string | null = null;
+
+	const basePath = `textbooks/${safePath ? safePath + "/" : ""}`;
+	const dirUrl = buildFileUrl(basePath);
+
 	try {
-		const entries = await fs.promises.readdir(dirPath, {
-			withFileTypes: true,
-		});
+		const res = await fetch(dirUrl);
+		if (!res.ok) throw new Error("CDN fetch failed");
 
-		for (const entry of entries) {
-			const entryPath = path.join(dirPath, entry.name);
-			if (entry.isDirectory()) {
-				totalSize += await getFolderSize(entryPath);
-			} else {
-				const stats = await fs.promises.stat(entryPath);
-				totalSize += stats.size;
-			}
-		}
-	} catch (e) {
-		// console.error(`Error calculating size for ${dirPath}:`, e);
-		return 0;
-	}
-	return totalSize;
-}
+		const html = await res.text();
+		const pre = html.match(/<pre>([\s\S]*?)<\/pre>/i)?.[1];
+		if (!pre) throw new Error("No <pre> block");
 
-async function searchFiles(
-	dir: string,
-	query: string,
-	baseDir: string,
-): Promise<FileItem[]> {
-	let results: FileItem[] = [];
-	try {
-		const entries = await fs.promises.readdir(dir, { withFileTypes: true });
+		const lines = pre.split("\n");
 
-		for (const entry of entries) {
-			if (entry.name.startsWith(".")) continue;
+		for (const line of lines) {
+			const m = line.match(
+				/<a href="([^"]+)">[^<]+<\/a>\s+\d{2}-[A-Za-z]{3}-\d{4}\s+\d{2}:\d{2}\s+(-|\d+)/
+			);
+			if (!m) continue;
 
-			const fullPath = path.join(dir, entry.name);
-			const relativePath = path.relative(baseDir, fullPath);
-			const isMatch = entry.name.toLowerCase().includes(query.toLowerCase());
+			const href = decodeURIComponent(m[1]);
+			const sizeToken = m[2];
 
-			if (entry.isDirectory()) {
-				const subResults = await searchFiles(fullPath, query, baseDir);
-				results = [...results, ...subResults];
+			if (href === "../") continue;
 
-				if (isMatch) {
-					const folderSize = await getFolderSize(fullPath);
-					results.push({
-						name: entry.name,
-						isDirectory: true,
-						path: relativePath,
-						displayName: formatName(entry.name),
-						size: formatSize(folderSize),
-					});
+			const isDirectory = sizeToken === "-";
+			const name = href.replace(/\/$/, "");
+
+			// notes
+			if (!isDirectory && name.toLowerCase().endsWith(".txt")) {
+				const noteRes = await fetch(buildFileUrl(`${basePath}${name}`));
+				if (noteRes.ok) {
+					noteContents.push(await noteRes.text());
 				}
-			} else {
-				if (entry.name.startsWith("note") && entry.name.endsWith(".txt"))
-					continue;
-
-				if (isMatch) {
-					const stats = await fs.promises.stat(fullPath);
-					results.push({
-						name: entry.name,
-						isDirectory: false,
-						path: relativePath,
-						displayName: formatName(entry.name),
-						size: formatSize(stats.size),
-					});
-				}
+				continue;
 			}
+
+			items.push({
+				name,
+				isDirectory,
+				path: safePath ? `${safePath}/${name}` : name,
+				cdnPath: `${basePath}${name}`.replace(/\/+$/, ""),
+				displayName: formatName(name),
+				size: isDirectory ? "" : formatSize(Number(sizeToken)),
+			});
 		}
-	} catch (e) {
-		console.error(`Error searching ${dir}:`, e);
+
+		// search
+		if (query) {
+			const q = query.toLowerCase();
+			items = items.filter(
+				(i) =>
+					i.name.toLowerCase().includes(q) ||
+					i.displayName.toLowerCase().includes(q) ||
+					i.path.toLowerCase().includes(q)
+			);
+		}
+
+		// dedupe
+		const map = new Map<string, FileItem>();
+		for (const item of items) {
+			const key = item.name.toLowerCase();
+			if (!map.has(key)) map.set(key, item);
+		}
+		items = [...map.values()];
+	} catch {
+		error = "Directory not found or empty.";
 	}
-	return results;
+
+	return { items, noteContents, error };
 }
 
 export default async function TextbooksPage({
@@ -100,104 +111,26 @@ export default async function TextbooksPage({
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
 	const resolvedSearchParams = await searchParams;
+
 	const currentPath =
 		typeof resolvedSearchParams.path === "string"
 			? resolvedSearchParams.path
 			: "";
+
 	const query =
 		typeof resolvedSearchParams.q === "string" ? resolvedSearchParams.q : "";
 
 	const safePath = currentPath.replace(/\.\./g, "");
 
-	const baseDir = path.join(process.cwd(), "public", "TEXTBOOKS");
-	const fullPath = path.join(baseDir, safePath);
-
-	let items: FileItem[] = [];
-	let noteContents: string[] = [];
-	let error: string | null = null;
-
-	if (query) {
-		items = await searchFiles(baseDir, query, baseDir);
-	} else {
-		try {
-			await fs.promises.access(fullPath);
-
-			const dirEntries = await fs.promises.readdir(fullPath, {
-				withFileTypes: true,
-			});
-
-			const noteFiles = dirEntries.filter(
-				(d) =>
-					d.isFile() && d.name.startsWith("note") && d.name.endsWith(".txt"),
-			);
-
-			if (noteFiles.length > 0) {
-				noteFiles.sort((a, b) =>
-					a.name.localeCompare(b.name, undefined, {
-						numeric: true,
-						sensitivity: "base",
-					}),
-				);
-
-				noteContents = await Promise.all(
-					noteFiles.map((f) =>
-						fs.promises.readFile(path.join(fullPath, f.name), "utf-8"),
-					),
-				);
-			}
-			const noteFileNames = new Set(noteFiles.map((f) => f.name));
-			const filteredEntries = dirEntries.filter(
-				(d) => !noteFileNames.has(d.name) && !d.name.startsWith("."),
-			);
-
-			items = await Promise.all(
-				filteredEntries.map(async (d) => {
-					const isDirectory = d.isDirectory();
-					const childPath = safePath ? path.join(safePath, d.name) : d.name;
-					let size = "";
-
-					if (!isDirectory) {
-						const stats = await fs.promises.stat(path.join(fullPath, d.name));
-						size = formatSize(stats.size);
-					} else {
-						try {
-							const folderSize = await getFolderSize(
-								path.join(fullPath, d.name),
-							);
-							size = formatSize(folderSize);
-						} catch (e) {
-							size = "Unknown";
-						}
-					}
-					return {
-						name: d.name,
-						isDirectory,
-						path: childPath,
-						displayName: formatName(d.name),
-						size,
-					};
-				}),
-			);
-
-			// Deduplicate items based on displayName to avoid case-sensitivity issues
-			const uniqueItems = new Map<string, FileItem>();
-			for (const item of items) {
-				if (!item.name.startsWith(".")) {
-					// Use lowercased display name as key to ensure case-insensitive deduplication
-					const key = item.displayName.toLowerCase();
-					if (!uniqueItems.has(key)) {
-						uniqueItems.set(key, item);
-					}
-				}
-			}
-			items = Array.from(uniqueItems.values());
-		} catch (e) {
-			error = "Directory not found or empty.";
-		}
-	}
+	const { items, noteContents, error } = await fetchFromCdn({
+		safePath,
+		query,
+	});
 
 	items.sort((a, b) => {
-		if (a.isDirectory === b.isDirectory) return a.name.localeCompare(b.name);
+		if (a.isDirectory === b.isDirectory) {
+			return a.name.localeCompare(b.name);
+		}
 		return a.isDirectory ? -1 : 1;
 	});
 

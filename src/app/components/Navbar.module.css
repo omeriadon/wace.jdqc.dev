@@ -1,90 +1,90 @@
 .header {
-	position: sticky;
-	top: 0;
-	z-index: 1000;
-	/* Allow blur to extend below if needed */
-	height: 0; /* Trick to make it overlay content like fixed, but constrained to width */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  /* Allow blur to extend below if needed */
+  height: 0; /* Trick to make it overlay content like fixed, but constrained to width */
 }
 
 .blur {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 7.5rem; /* h-30 equivalent */
-	z-index: -1;
-	pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 7.5rem; /* h-30 equivalent */
+  z-index: -1;
+  pointer-events: none;
 }
 
 .navbar {
-	position: relative;
-	/* Removed fixed positioning */
-	/* top: 0px; left: 0px; right: 0px; */
-	/*backdrop-filter: blur(3px);*/
-	/* z-index: 1000; */
-	border-radius: 30px;
-	padding: 0.5rem 1rem;
+  position: relative;
+  /* Removed fixed positioning */
+  /* top: 0px; left: 0px; right: 0px; */
+  /*backdrop-filter: blur(3px);*/
+  /* z-index: 1000; */
+  border-radius: 30px;
+  padding: 0.5rem 1rem;
 }
 
 .logo {
-	font-size: 1.5rem;
-	margin-left: -0.5rem;
+  font-size: 1.5rem;
+  margin-left: -0.5rem;
 }
 
 .logo:hover {
-	background-color: var(--theme-color);
+  background-color: var(--theme-color);
 }
 
 .navbarContent {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .navItems {
-	display: flex;
-	list-style: none;
-	gap: 1rem;
-	margin: 0;
-	padding: 0;
+  display: flex;
+  list-style: none;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
 }
 
 .navItem,
 .logo {
-	padding: 5px 10px;
-	cursor: pointer;
-	transition:
-		background-color 0.2s,
-		transform 0.2s,
-		color 0.2s;
-	border-radius: 22px;
-	position: relative;
-	z-index: 1;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.2s,
+    color 0.2s;
+  border-radius: 22px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .navItem:hover {
-	background-color: var(--foreground);
-	color: var(--background);
+  background-color: var(--foreground);
+  color: var(--background);
 }
 
 .navItem::before,
 .logo::before {
-	content: attr(data-text);
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: inherit;
-	filter: blur(6px);
-	opacity: 1;
-	z-index: -1;
-	pointer-events: none;
-	white-space: nowrap;
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  filter: blur(6px);
+  opacity: 1;
+  z-index: -1;
+  pointer-events: none;
+  white-space: nowrap;
 }

@@ -19,8 +19,11 @@ export async function GET(request: NextRequest) {
   const isPreview = searchParams.get("preview") === "true";
 
   const safePath = relativePath.replace(/\.\./g, "");
-  const baseDir = path.join(process.cwd(), "public", "TEXTBOOKS");
+  const TEXTBOOKS_DIR = process.env.TEXTBOOKS_DIR_NAME || "textbooks";
+  const baseDir = path.join(process.cwd(), "public", TEXTBOOKS_DIR);
   const fullPath = path.join(baseDir, safePath);
+
+  console.log("/api/download incoming", { ip, relativePath, safePath, isPreview, TEXTBOOKS_DIR, baseDir, fullPath });
 
   try {
     await fs.promises.access(fullPath);
