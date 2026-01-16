@@ -1,0 +1,336 @@
+.container {
+	width: 100%;
+	max-width: 70rem;
+	padding-top: 6rem;
+	padding-bottom: 2rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	margin-bottom: 0.75rem;
+}
+
+.searchContainer {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	margin-bottom: 0.75rem;
+	margin-top: 2rem;
+}
+
+.searchWrapper {
+	position: relative;
+	width: 100%;
+}
+
+.searchInput {
+	width: 100%;
+	border-radius: 32px;
+	border: 1px solid var(--navbar-border);
+	background-color: var(--navbar-border);
+	color: var(--foreground);
+	font-size: 1rem;
+	transition: all 0.2s ease;
+	outline: none;
+	padding: 1.5rem 3rem 1.5rem 1.6rem;
+}
+
+.searchIcon {
+	position: absolute;
+	right: 1.55rem;
+	top: 50%;
+	transform: translateY(-50%);
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+.searchInput:focus {
+	border-color: #51a6fc;
+	background-color: var(--background);
+}
+
+.backLink {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	background-color: var(--navbar-border);
+	color: var(--foreground);
+	border: 1px solid transparent;
+	border-radius: 32px;
+	font-weight: 500;
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	transition-property: all;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 150ms;
+}
+
+.backLink:hover {
+	background-color: #51a6fc;
+	border-color: #51a6fc;
+	color: white;
+}
+
+.breadcrumbs {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	row-gap: 0.25rem;
+	margin: 0 auto;
+}
+
+.breadcrumbItem {
+	display: flex;
+	align-items: center;
+}
+
+.title {
+	font-size: 1rem;
+	line-height: 2.25rem;
+	font-weight: 700;
+	color: var(--foreground);
+	text-align: center;
+	margin: 0;
+}
+
+.titlePrevious {
+	font-size: 1rem;
+	line-height: 2.25rem;
+	font-weight: 700;
+	color: var(--foreground);
+	text-align: center;
+	margin: 0;
+}
+
+.separator {
+	font-size: 1rem;
+	line-height: 2.25rem;
+	font-weight: 700;
+	color: var(--foreground);
+	opacity: 0.3;
+}
+
+.noteWrapper {
+	border-radius: 32px;
+	background-color: var(--navbar-border);
+	margin-bottom: 1.5rem;
+	display: flex;
+	position: relative;
+}
+
+.noteIndicator {
+	width: 50px;
+	background-color: #51a6fc;
+	margin: 6px 0 6px 6px;
+	border-top-left-radius: 26px; /* 32px - 6px */
+	border-bottom-left-radius: 26px;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+	flex-shrink: 0;
+}
+
+.noteInner {
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+	padding: 1.5rem;
+	flex: 1 1 0%;
+}
+
+.noteIcon {
+	flex-shrink: 0;
+}
+
+.noteTextContainer {
+	flex: 1 1 0%;
+}
+
+.noteText {
+	line-height: 1.25rem;
+	color: var(--foreground);
+	white-space: pre-wrap;
+	font-family: var(--font-new-york);
+}
+
+.error {
+	color: red;
+	background-color: var(--navbar-border);
+	padding: 1rem;
+	border-radius: 32px;
+	text-align: center;
+}
+
+.grid {
+	display: grid;
+	gap: 0.75rem;
+}
+
+.emptyMessage {
+	color: var(--foreground);
+	opacity: 0.6;
+	font-style: italic;
+	text-align: center;
+}
+
+.itemCard {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem;
+	border-radius: 32px;
+	border: 1px solid var(--navbar-border);
+	transition-property: all;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 200ms;
+}
+
+.itemCard:hover {
+	background-color: var(--navbar-border);
+	border-color: var(--navbar-border);
+}
+
+.itemCardLink {
+	cursor: pointer;
+}
+
+.itemContent {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	flex: 1 1 0%;
+	min-width: 0;
+	font-family: var(--font-new-york);
+}
+
+.iconContainer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 10px;
+	background-color: var(--navbar-border);
+	color: var(--foreground);
+	flex-shrink: 0;
+	transition: all 0.2s ease;
+}
+
+.itemCard:hover .iconContainer {
+	background-color: var(--foreground);
+	color: var(--background);
+}
+
+.icon {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+.itemName {
+	font-size: 1.125rem;
+	line-height: 1.75rem;
+	font-weight: 500;
+	color: var(--foreground);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: block;
+	width: 100%;
+	transition-property:
+		color, background-color, border-color, text-decoration-color, fill,
+		stroke;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 150ms;
+}
+
+.itemPath {
+	font-size: 0.75rem;
+	color: var(--foreground);
+	opacity: 0.5;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: block;
+	margin-top: 0.125rem;
+	transition: color 0.2s ease;
+}
+
+.textContainer {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	flex: 1;
+}
+
+.itemSize {
+	font-size: 0.875rem;
+	color: var(--foreground);
+	opacity: 0.6;
+	margin-left: auto;
+	margin-right: 0rem;
+	white-space: nowrap;
+	transition: color 0.2s ease;
+}
+
+.downloadContainer {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-left: 1rem;
+}
+
+.downloadButton {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	background-color: var(--navbar-border);
+	color: var(--foreground);
+	border: 1px solid var(--navbar-border);
+	border-radius: 16px;
+	font-weight: 500;
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	transition-property: all;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 150ms;
+}
+
+.itemCard:hover .downloadButton {
+	background-color: var(--foreground);
+	border-color: var(--foreground);
+	color: var(--background);
+}
+
+.itemCard:hover .downloadButton:hover {
+	background-color: #51a6fc;
+	border-color: #51a6fc;
+	color: white;
+}
+
+.downloadButton:hover {
+	background-color: #51a6fc;
+	border-color: #51a6fc;
+	color: white;
+}
+
+.downloadIcon {
+	width: 1rem;
+	height: 1rem;
+}

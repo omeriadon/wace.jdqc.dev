@@ -1,0 +1,137 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	width: 100%;
+	background-color: var(--background);
+	border-left: 1px solid var(--navbar-border);
+	overflow: hidden;
+	position: relative;
+	box-sizing: border-box;
+}
+
+.tabs {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	display: flex;
+	overflow-x: auto;
+	background-color: var(--background);
+	border-bottom: 1px solid var(--navbar-border);
+	height: 50px;
+	z-index: 100; /* Increased z-index */
+	align-items: center;
+	/* Hide scrollbar */
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.tabs::-webkit-scrollbar {
+	display: none;
+}
+
+.tab {
+	display: flex;
+	align-items: center;
+	padding: 0 1rem;
+	cursor: pointer;
+	font-size: 0.875rem;
+	color: var(--foreground);
+	opacity: 0.7;
+	border-right: 1px solid var(--navbar-border);
+	white-space: nowrap;
+	max-width: 200px;
+	height: 100%;
+	background-color: transparent;
+}
+
+.tab:hover {
+	opacity: 1;
+	background-color: rgba(0, 0, 0, 0.05);
+}
+
+.activeTab {
+	opacity: 1;
+	background-color: rgba(0, 0, 0, 0.03);
+	font-weight: 500;
+	border-bottom: 2px solid var(--theme-color);
+}
+
+.tabName {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.closeButton {
+	border-radius: 50%;
+	opacity: 0.5;
+	margin-left: 0.5rem;
+	transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+	scale: 2;
+	opacity: 1;
+	color: #51a6fc;
+}
+
+@media (prefers-color-scheme: light) {
+	.closeButton:hover {
+		background-color: rgb(190, 190, 190);
+	}
+}
+
+.content {
+	flex: 1;
+	position: relative;
+	overflow: auto;
+	display: flex;
+	justify-content: center;
+	background-color: #525659;
+	width: 100%;
+	padding-top: 50px;
+	/* Hide scrollbar */
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.content::-webkit-scrollbar {
+	display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+	.content {
+		background-color: #1a1a1a;
+	}
+}
+
+.pdfWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+}
+
+.pdfDocument {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.pdfObject {
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
+.emptyState {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	color: var(--foreground);
+	opacity: 0.5;
+	font-style: italic;
+}

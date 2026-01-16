@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@font-face {
+	font-family: "Departure Mono";
+	src: url("/fonts/DepartureMono.otf") format("opentype");
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "New York";
+	src: url("/fonts/NewYork.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+}
+
+.font-departure {
+	font-family: "Departure Mono", monospace;
+}
+.font-new-york {
+	font-family: "New York", serif;
+}
+
+@layer base {
+	:root {
+		--background: #ffffff;
+		--foreground: #171717;
+		--navbar-border: #e7e7f0;
+		--theme-color: #51a6fc;
+		--font-new-york: "New York", serif;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:root {
+			--background: #0a0a0a;
+			--foreground: #ededed;
+			--navbar-border: #393b42;
+		}
+	}
+
+	body {
+		background-color: var(--background);
+		color: var(--foreground);
+		font-family: "Departure Mono", monospace;
+		user-select: none;
+	}
+}
+
+.centered-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 30vh;
+	padding: 20px;
+	box-sizing: border-box;
+	margin: 0;
+}
+
+/* Hide scrollbars for react-pdf-viewer */
+.rpv-core__inner-pages {
+	scrollbar-width: none !important;
+	-ms-overflow-style: none !important;
+}
+
+.rpv-core__inner-pages::-webkit-scrollbar {
+	display: none !important;
+}
