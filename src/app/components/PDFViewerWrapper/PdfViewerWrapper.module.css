@@ -46,10 +46,9 @@
     left: -5px;
     top: 0;
     bottom: 0;
-    width: 10px;
+    width: 109px;
     cursor: col-resize;
     z-index: 50;
-    color: red;
   }
 }
 
