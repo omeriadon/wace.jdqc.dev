@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import "@react-pdf-viewer/core/lib/styles/index.css";
@@ -9,61 +9,106 @@ import styles from "./PdfViewer.module.css";
 import { usePdf } from "@/context/PdfContext";
 import { buildFileUrl, toRelativePath, isBooklistPath } from "@/lib/cdn-utils";
 
+// Paths to worker files
+const DEFAULT_WORKER = "/pdf.worker.min.js";
+const FALLBACK_WORKER =
+  "https://unpkg.com/pdfjs-dist@3.6.172/build/pdf.worker.min.js";
+
 export default function PdfViewer() {
   const { files, activeFile, setActive, removeFile } = usePdf();
-  const [theme] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-    }
-    return "light";
-  });
+  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [workerUrl, setWorkerUrl] = useState<string | undefined>(
+    DEFAULT_WORKER,
+  );
+
+  // Mark mounted to avoid SSR mismatch
+  useEffect(() => {
+    setMounted(true);
+
+    // Detect dark/light mode
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    setTheme(mq.matches ? "dark" : "light");
+
+    const listener = (e: MediaQueryListEvent) =>
+      setTheme(e.matches ? "dark" : "light");
+    mq.addEventListener("change", listener);
+
+    return () => mq.removeEventListener("change", listener);
+  }, []);
+
+  // Check if worker exists, fallback if not
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(DEFAULT_WORKER, { method: "HEAD" });
+        if (!cancelled && res.ok) {
+          setWorkerUrl(DEFAULT_WORKER);
+          return;
+        }
+      } catch {}
+
+      try {
+        const res2 = await fetch(FALLBACK_WORKER, { method: "HEAD" });
+        if (!cancelled && res2.ok) {
+          setWorkerUrl(FALLBACK_WORKER);
+          return;
+        }
+      } catch {}
+
+      if (!cancelled) setWorkerUrl(undefined);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const defaultLayoutPluginInstance = defaultLayoutPlugin({
     sidebarTabs: () => [],
     renderToolbar: (Toolbar) => (
       <Toolbar>
-        {(slots: any) => {
-          const {
-            CurrentPageInput,
-            GoToNextPage,
-            GoToPreviousPage,
-            ShowSearchPopover,
-            Zoom,
-            ZoomIn,
-            ZoomOut,
-          } = slots;
-
+        {(slots: unknown) => {
+          const s = slots as Record<string, React.ComponentType<unknown>>;
+          const CurrentPageInput =
+            s.CurrentPageInput as React.ComponentType<unknown>;
+          const GoToNextPage = s.GoToNextPage as React.ComponentType<unknown>;
+          const GoToPreviousPage =
+            s.GoToPreviousPage as React.ComponentType<unknown>;
+          const ShowSearchPopover =
+            s.ShowSearchPopover as React.ComponentType<unknown>;
+          const Zoom = s.Zoom as React.ComponentType<unknown>;
+          const ZoomIn = s.ZoomIn as React.ComponentType<unknown>;
+          const ZoomOut = s.ZoomOut as React.ComponentType<unknown>;
           return (
             <div
               style={{ display: "flex", alignItems: "center", width: "100%" }}
             >
-              <div style={{ padding: "0px 2px" }}>
+              <div style={{ padding: "0 2px" }}>
                 <ShowSearchPopover />
               </div>
-              <div style={{ padding: "0px 2px" }}>
+              <div style={{ padding: "0 2px" }}>
                 <ZoomOut />
               </div>
-              <div style={{ padding: "0px 2px" }}>
+              <div style={{ padding: "0 2px" }}>
                 <Zoom />
               </div>
-              <div style={{ padding: "0px 2px" }}>
+              <div style={{ padding: "0 2px" }}>
                 <ZoomIn />
               </div>
-              <div style={{ padding: "0px 2px", marginLeft: "auto" }}>
+              <div style={{ padding: "0 2px", marginLeft: "auto" }}>
                 <GoToPreviousPage />
               </div>
               <div
                 style={{
-                  padding: "0px 2px",
+                  padding: "0 2px",
                   display: "flex",
                   alignItems: "center",
                 }}
               >
                 <CurrentPageInput />
               </div>
-              <div style={{ padding: "0px 2px" }}>
+              <div style={{ padding: "0 2px" }}>
                 <GoToNextPage />
               </div>
             </div>
@@ -73,7 +118,7 @@ export default function PdfViewer() {
     ),
   });
 
-  if (files.length === 0) {
+  if (!mounted || files.length === 0) {
     return (
       <div className={styles.container}>
         <div className={styles.emptyState}>No PDFs open</div>
@@ -116,16 +161,27 @@ export default function PdfViewer() {
           </div>
         ))}
       </div>
+
       <div className={styles.content}>
-        <Worker workerUrl="/pdf.worker.min.js">
-          <div style={{ height: "100%", width: "100%" }}>
+        {workerUrl ? (
+          <Worker workerUrl={workerUrl}>
+            <div style={{ height: "100%", width: "100%", margin: "0 auto" }}>
+              <Viewer
+                fileUrl={buildFileUrl(activePdf.url)}
+                plugins={[defaultLayoutPluginInstance]}
+                theme={theme}
+              />
+            </div>
+          </Worker>
+        ) : (
+          <div style={{ height: "100%", width: "100%", margin: "0 auto" }}>
             <Viewer
               fileUrl={buildFileUrl(activePdf.url)}
               plugins={[defaultLayoutPluginInstance]}
               theme={theme}
             />
           </div>
-        </Worker>
+        )}
       </div>
     </div>
   );
