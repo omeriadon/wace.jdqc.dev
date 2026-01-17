@@ -2,8 +2,8 @@
 
 import { useEffect, useState, ReactNode } from "react";
 
-// Use relative URL to avoid cross-origin issues during local dev
-const HARDCODED_BOOKLIST_URL = "/cdn/Perth Mod Booklist Year 11 2026.pdf";
+const HARDCODED_BOOKLIST_URL =
+  "/cdn/" + encodeURIComponent("Perth Mod Booklist Year 11 2026.pdf");
 
 export default function ClientWrapper({ children }: { children: ReactNode }) {
   const [isMobile, setIsMobile] = useState<boolean>(() =>
