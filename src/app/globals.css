@@ -56,7 +56,6 @@
   margin: 0;
 }
 
-/* Hide scrollbars for react-pdf-viewer */
 .rpv-core__inner-pages {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;

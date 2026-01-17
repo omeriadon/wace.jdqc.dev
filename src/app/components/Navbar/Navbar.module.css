@@ -2,8 +2,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  /* Allow blur to extend below if needed */
-  height: 0; /* Trick to make it overlay content like fixed, but constrained to width */
+  height: 0;
 }
 
 .blur {
@@ -11,17 +10,13 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 7.5rem; /* h-30 equivalent */
+  height: 7.5rem;
   z-index: -1;
   pointer-events: none;
 }
 
 .navbar {
   position: relative;
-  /* Removed fixed positioning */
-  /* top: 0px; left: 0px; right: 0px; */
-  /*backdrop-filter: blur(3px);*/
-  /* z-index: 1000; */
   border-radius: 30px;
   padding: 0.5rem 1rem;
 }
