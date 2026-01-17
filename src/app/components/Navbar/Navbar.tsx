@@ -20,8 +20,8 @@ export default function Navbar() {
     <header className={styles.header}>
       <ProgressiveBlur
         className={styles.blur}
-        blurIntensity={7.0}
-        blurLayers={7}
+        blurIntensity={2}
+        blurLayers={20}
       />
       <nav className={styles.navbar}>
         <div className={styles.navbarContent}>
