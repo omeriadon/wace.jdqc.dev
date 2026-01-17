@@ -16,47 +16,41 @@ export default function PdfViewerWrapper({
   children: React.ReactNode;
 }) {
   const { isOpen } = usePdf();
-  const [width, setWidth] = useState(600); // Default width for desktop
-  const [height, setHeight] = useState(400); // Default height for mobile
+  const [mounted, setMounted] = useState(false); // Track client mount
+  const [width, setWidth] = useState(600);
+  const [height, setHeight] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
+  // Detect client mount
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1000);
-    };
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1000);
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const startResizing = React.useCallback(() => {
-    setIsResizing(true);
-  }, []);
-
-  const stopResizing = React.useCallback(() => {
-    setIsResizing(false);
-  }, []);
+  const startResizing = React.useCallback(() => setIsResizing(true), []);
+  const stopResizing = React.useCallback(() => setIsResizing(false), []);
 
   const resize = React.useCallback(
-    (mouseMoveEvent: MouseEvent) => {
-      if (isResizing) {
-        if (isMobile) {
-          const newHeight = window.innerHeight - mouseMoveEvent.clientY;
-          if (newHeight > 100 && newHeight < window.innerHeight - 100) {
-            setHeight(newHeight);
-          }
-        } else {
-          const newWidth = window.innerWidth - mouseMoveEvent.clientX;
-          // Max width 60vw, min width 30vw
-          const maxWidth = window.innerWidth * 0.6;
-          const minWidth = window.innerWidth * 0.3;
+    (e: MouseEvent) => {
+      if (!isResizing) return;
 
-          if (newWidth > minWidth && newWidth < maxWidth) {
-            setWidth(newWidth);
-          }
-        }
+      if (isMobile) {
+        const newHeight = window.innerHeight - e.clientY;
+        if (newHeight > 100 && newHeight < window.innerHeight - 100)
+          setHeight(newHeight);
+      } else {
+        const newWidth = window.innerWidth - e.clientX;
+        const maxWidth = window.innerWidth * 0.6;
+        const minWidth = window.innerWidth * 0.3;
+        if (newWidth > minWidth && newWidth < maxWidth) setWidth(newWidth);
       }
     },
     [isResizing, isMobile],
@@ -70,6 +64,9 @@ export default function PdfViewerWrapper({
       window.removeEventListener("mouseup", stopResizing);
     };
   }, [resize, stopResizing]);
+
+  // Render nothing on server to prevent hydration mismatch
+  if (!mounted) return <div className={styles.wrapper}>{children}</div>;
 
   return (
     <div className={styles.wrapper}>
@@ -87,6 +84,7 @@ export default function PdfViewerWrapper({
       >
         {children}
       </motion.div>
+
       <AnimatePresence>
         {isOpen && (
           <motion.div

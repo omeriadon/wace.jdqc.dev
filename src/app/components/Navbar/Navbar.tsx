@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import styles from "./Navbar.module.css";
 import Link from "next/link";
 import { ProgressiveBlur } from "../../components/ProgressiveBlur";
@@ -9,6 +10,11 @@ const links = [{ title: "Textbooks", link: "/textbooks" }];
 
 export default function Navbar() {
   const { toggle, isOpen } = usePdf();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <header className={styles.header}>
@@ -23,19 +29,6 @@ export default function Navbar() {
             WACE is Amazing
           </Link>
 
-          <button
-            onClick={toggle}
-            className={styles.navItem}
-            style={{
-              position: "absolute",
-              left: "50%",
-              transform: "translateX(-50%)",
-            }}
-            data-text={isOpen ? "Close PDF Viewer" : "Open PDF Viewer"}
-          >
-            {isOpen ? "Close PDF Viewer" : "Open PDF Viewer"}
-          </button>
-
           <ul className={styles.navItems}>
             {links.map((item) => (
               <Link
@@ -48,6 +41,23 @@ export default function Navbar() {
               </Link>
             ))}
           </ul>
+          <button
+            onClick={toggle}
+            className={styles.navItem}
+            data-text={
+              mounted
+                ? isOpen
+                  ? "Close PDF Viewer"
+                  : "Open PDF Viewer"
+                : "Open PDF Viewer"
+            }
+          >
+            {mounted
+              ? isOpen
+                ? "Close PDF Viewer"
+                : "Open PDF Viewer"
+              : "Open PDF Viewer"}
+          </button>
         </div>
       </nav>
     </header>

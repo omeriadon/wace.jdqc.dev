@@ -31,7 +31,6 @@ export default function ClientWrapper({ children }: { children: ReactNode }) {
                 ? input.url
                 : String(input);
 
-          // Allow pdf.js to fetch the hardcoded booklist URL unmodified
           if (url === HARDCODED_BOOKLIST_URL) {
             return originalFetch(url);
           }
@@ -69,7 +68,7 @@ export default function ClientWrapper({ children }: { children: ReactNode }) {
           fontSize: "1.2rem",
         }}
       >
-        {"Use a desktop bro; PDFs won't load well on mobile."}
+        {"Use a desktop bro you aren't downloading textbooks on a phone."}
       </div>
     );
   }
