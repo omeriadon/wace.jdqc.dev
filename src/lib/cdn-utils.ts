@@ -5,11 +5,17 @@ export const TEXTBOOKS_DIR = "textbooks";
 export const BOOKLIST_PATH = "Perth Mod Booklist Year 11 2026.pdf";
 
 export function buildFileUrl(relativePath: string): string {
-  const clean = String(relativePath || "").replace(/^\/+/, "");
-  if (!clean) return CDN_BASE;
+  if (!relativePath) return CDN_BASE;
 
-  const segments = clean.split("/").map(encodeURIComponent);
-  return `${CDN_BASE.replace(/\/+$/, "")}/${segments.join("/")}`;
+  const clean = decodeURIComponent(
+    String(relativePath || "").replace(/^\/+/, ""),
+  );
+
+  if (clean === BOOKLIST_PATH) {
+    return `${CDN_BASE.replace(/\/+$/, "")}/${encodeURIComponent(clean)}`;
+  }
+
+  return `${CDN_BASE.replace(/\/+$/, "")}/${encodeURIComponent(clean)}`;
 }
 
 export function toRelativePath(url: string): string {
