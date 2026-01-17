@@ -5,21 +5,21 @@ import { useCallback, useRef, useEffect } from "react";
 import styles from "../textbooks/Textbook.module.css";
 import { SearchIcon } from "./Icons";
 
-function debounce<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  wait: number,
-) {
+function debounce<T extends (...args: any[]) => any>(func: T, wait: number) {
   let timeout: ReturnType<typeof setTimeout> | null = null;
+
   const debounced = (...args: Parameters<T>) => {
-    if (timeout !== null) clearTimeout(timeout as number);
+    if (timeout !== null) clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
   };
+
   debounced.cancel = () => {
     if (timeout !== null) {
-      clearTimeout(timeout as number);
+      clearTimeout(timeout);
       timeout = null;
     }
   };
+
   return debounced as ((...args: Parameters<T>) => void) & {
     cancel: () => void;
   };
