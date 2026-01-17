@@ -61,7 +61,6 @@ async function fetchFromCdn({
       const isDirectory = sizeToken === "-";
       const name = href.replace(/\/$/, "");
 
-      // notes
       if (!isDirectory && name.toLowerCase().endsWith(".txt")) {
         const noteRes = await fetch(buildFileUrl(`${basePath}${name}`));
         if (noteRes.ok) {
@@ -80,7 +79,6 @@ async function fetchFromCdn({
       });
     }
 
-    // search
     if (query) {
       const q = query.toLowerCase();
       items = items.filter(
@@ -91,7 +89,6 @@ async function fetchFromCdn({
       );
     }
 
-    // dedupe
     const map = new Map<string, FileItem>();
     for (const item of items) {
       const key = item.name.toLowerCase();

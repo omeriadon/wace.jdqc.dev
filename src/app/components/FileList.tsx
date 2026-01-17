@@ -29,7 +29,7 @@ export default function FileList({
           animate={{ opacity: 1, y: 0 }}
           transition={{
             duration: 0.2,
-            delay: Math.min(index * 0.03, 0.3), // Cap delay to avoid long waits
+            delay: Math.min(index * 0.03, 0.3),
             ease: "easeOut",
           }}
           layout="position"

@@ -48,9 +48,7 @@ export function PdfProvider({ children }: { children: ReactNode }) {
           parsed.unshift({ name: "Booklist", url: BOOKLIST_PATH });
         return parsed;
       }
-    } catch {
-      // ignore parse errors
-    }
+    } catch {}
     return [{ name: "Booklist", url: BOOKLIST_PATH }];
   });
 
@@ -72,7 +70,6 @@ export function PdfProvider({ children }: { children: ReactNode }) {
     }
   });
 
-  // Save state to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("pdf_files", JSON.stringify(files));
     if (activeFile) {
@@ -97,7 +94,6 @@ export function PdfProvider({ children }: { children: ReactNode }) {
   };
 
   const removeFile = (url: string) => {
-    // Prevent removing the booklist
     if (isBooklistPath(url)) return;
 
     const normalizedUrl = toRelativePath(url);

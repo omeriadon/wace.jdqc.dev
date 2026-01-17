@@ -3,7 +3,6 @@ type RateLimitRecord = {
   resetTime: number;
 };
 
-// Use global scope to persist across hot reloads in development
 const globalStore = global as unknown as {
   _rateLimitStore?: Map<string, RateLimitRecord>;
 };

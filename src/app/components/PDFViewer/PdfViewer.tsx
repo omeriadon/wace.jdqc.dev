@@ -9,7 +9,6 @@ import styles from "./PdfViewer.module.css";
 import { usePdf } from "@/context/PdfContext";
 import { buildFileUrl, toRelativePath, isBooklistPath } from "@/lib/cdn-utils";
 
-// Paths to worker files
 const DEFAULT_WORKER = "/pdf.worker.min.js";
 const FALLBACK_WORKER =
   "https://unpkg.com/pdfjs-dist@3.6.172/build/pdf.worker.min.js";
@@ -22,11 +21,9 @@ export default function PdfViewer() {
     DEFAULT_WORKER,
   );
 
-  // Mark mounted to avoid SSR mismatch
   useEffect(() => {
     setMounted(true);
 
-    // Detect dark/light mode
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     setTheme(mq.matches ? "dark" : "light");
 
@@ -37,7 +34,6 @@ export default function PdfViewer() {
     return () => mq.removeEventListener("change", listener);
   }, []);
 
-  // Check if worker exists, fallback if not
   useEffect(() => {
     let cancelled = false;
     (async () => {

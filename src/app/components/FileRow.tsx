@@ -59,7 +59,6 @@ export default function FileRow({
   const handlePreview = (e: React.MouseEvent) => {
     console.log("FileRow: preview clicked", { item });
     e.stopPropagation();
-    // If CDN is configured, preview directly from CDN; otherwise use API preview
     const fileUrl =
       CDN_BASE && !item.isDirectory
         ? buildFileUrl(item.cdnPath || item.path)

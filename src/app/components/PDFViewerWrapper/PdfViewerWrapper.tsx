@@ -16,14 +16,13 @@ export default function PdfViewerWrapper({
   children: React.ReactNode;
 }) {
   const { isOpen } = usePdf();
-  const [mounted, setMounted] = useState(false); // Track client mount
+  const [mounted, setMounted] = useState(false);
   const [width, setWidth] = useState(600);
   const [height, setHeight] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  // Detect client mount
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -65,7 +64,6 @@ export default function PdfViewerWrapper({
     };
   }, [resize, stopResizing]);
 
-  // Render nothing on server to prevent hydration mismatch
   if (!mounted) return <div className={styles.wrapper}>{children}</div>;
 
   return (
