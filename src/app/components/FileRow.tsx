@@ -94,50 +94,35 @@ export default function FileRow({
 
       <div className={styles.downloadContainer}>
         {!item.isDirectory && (
-          <button
-            className={styles.downloadButton}
-            onClick={handlePreview}
-            title="Preview"
-          >
-            <EyeIcon width={16} height={16} className={styles.downloadIcon} />
-          </button>
-        )}
-        {item.isDirectory ? (
-          <a
-            href={`/api/download?path=${encodeURIComponent(item.path)}`}
-            className={styles.downloadButton}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDownload();
-            }}
-          >
-            <DownloadIcon
-              width={16}
-              height={16}
-              className={styles.downloadIcon}
-            />
-            Download
-          </a>
-        ) : (
-          <a
-            href={
-              CDN_BASE
-                ? buildFileUrl(item.cdnPath || item.path)
-                : `/api/download?path=${encodeURIComponent(item.path)}`
-            }
-            className={styles.downloadButton}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDownload();
-            }}
-          >
-            <DownloadIcon
-              width={16}
-              height={16}
-              className={styles.downloadIcon}
-            />
-            Download
-          </a>
+          <>
+            <button
+              className={styles.downloadButton}
+              onClick={handlePreview}
+              title="Preview"
+            >
+              <EyeIcon width={16} height={16} className={styles.downloadIcon} />
+            </button>
+
+            <a
+              href={
+                CDN_BASE
+                  ? buildFileUrl(item.cdnPath || item.path)
+                  : `/api/download?path=${encodeURIComponent(item.path)}`
+              }
+              className={styles.downloadButton}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDownload();
+              }}
+            >
+              <DownloadIcon
+                width={16}
+                height={16}
+                className={styles.downloadIcon}
+              />
+              Download
+            </a>
+          </>
         )}
       </div>
     </div>
