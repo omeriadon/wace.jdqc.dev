@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import styles from "./Navbar.module.css";
 import Link from "next/link";
 import { ProgressiveBlur } from "../../components/ProgressiveBlur";
@@ -10,6 +11,7 @@ const links = [{ title: "Textbooks", link: "/textbooks" }];
 
 export default function Navbar() {
   const { toggle, isOpen } = usePdf();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -30,17 +32,19 @@ export default function Navbar() {
           </Link>
 
           <ul className={styles.navItems}>
-            {links.map((item) => (
-              <Link
-                href={item.link}
-                key={item.link}
-                className={styles.navItem}
-                data-text={item.title}
-              >
-                {item.title}
-              </Link>
-            ))}
+            {pathname !== "/textbooks" &&
+              links.map((item) => (
+                <Link
+                  href={item.link}
+                  key={item.link}
+                  className={styles.navItem}
+                  data-text={item.title}
+                >
+                  {item.title}
+                </Link>
+              ))}
           </ul>
+
           <button
             onClick={toggle}
             className={styles.navItem}

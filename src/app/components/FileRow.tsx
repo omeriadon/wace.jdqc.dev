@@ -105,8 +105,8 @@ export default function FileRow({
 
             <a
               href={
-                CDN_BASE
-                  ? buildFileUrl(item.cdnPath || item.path)
+                CDN_BASE && item.cdnPath
+                  ? `/api/cdn-download?cdnPath=${encodeURIComponent(item.cdnPath)}`
                   : `/api/download?path=${encodeURIComponent(item.path)}`
               }
               className={styles.downloadButton}
