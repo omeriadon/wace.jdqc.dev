@@ -16,16 +16,13 @@ export default function PdfViewerWrapper({
   children: React.ReactNode;
 }) {
   const { isOpen } = usePdf();
-  const [mounted, setMounted] = useState(false);
+
   const [width, setWidth] = useState(600);
   const [height, setHeight] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const sidebarRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1000);
@@ -43,13 +40,16 @@ export default function PdfViewerWrapper({
 
       if (isMobile) {
         const newHeight = window.innerHeight - e.clientY;
-        if (newHeight > 100 && newHeight < window.innerHeight - 100)
+        if (newHeight > 100 && newHeight < window.innerHeight - 100) {
           setHeight(newHeight);
+        }
       } else {
         const newWidth = window.innerWidth - e.clientX;
         const maxWidth = window.innerWidth * 0.6;
         const minWidth = window.innerWidth * 0.3;
-        if (newWidth > minWidth && newWidth < maxWidth) setWidth(newWidth);
+        if (newWidth > minWidth && newWidth < maxWidth) {
+          setWidth(newWidth);
+        }
       }
     },
     [isResizing, isMobile],
@@ -63,8 +63,6 @@ export default function PdfViewerWrapper({
       window.removeEventListener("mouseup", stopResizing);
     };
   }, [resize, stopResizing]);
-
-  if (!mounted) return <div className={styles.wrapper}>{children}</div>;
 
   return (
     <div className={styles.wrapper}>

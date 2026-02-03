@@ -5,52 +5,68 @@ import { useEffect, useState, ReactNode } from "react";
 const HARDCODED_BOOKLIST_URL =
   "/cdn/" + encodeURIComponent("Perth Mod Booklist Year 11 2026.pdf");
 
+interface WaceWindow extends Window {
+  __wace_fetch_wrapped?: boolean;
+  __wace_fetch_original?: typeof fetch;
+}
+
 export default function ClientWrapper({ children }: { children: ReactNode }) {
   const [isMobile, setIsMobile] = useState<boolean>(() =>
     typeof window !== "undefined" ? window.innerWidth <= 620 : false,
   );
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 620);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 620);
+    };
+
     window.addEventListener("resize", handleResize);
 
     try {
-      if (
-        typeof window !== "undefined" &&
-        !(window as any).__wace_fetch_wrapped
-      ) {
-        const originalFetch = window.fetch.bind(window);
-        (window as any).__wace_fetch_wrapped = true;
-        (window as any).__wace_fetch_original = originalFetch;
+      if (typeof window !== "undefined") {
+        const w = window as WaceWindow;
 
-        window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
-          const url =
-            typeof input === "string"
-              ? input
-              : input instanceof Request
-                ? input.url
-                : String(input);
+        if (!w.__wace_fetch_wrapped) {
+          const originalFetch = window.fetch.bind(window);
 
-          if (url === HARDCODED_BOOKLIST_URL) {
-            return originalFetch(url);
-          }
+          w.__wace_fetch_wrapped = true;
+          w.__wace_fetch_original = originalFetch;
 
-          try {
-            if (input instanceof Request && init) {
-              return await originalFetch(input);
+          window.fetch = async (
+            input: RequestInfo | URL,
+            init?: RequestInit,
+          ): Promise<Response> => {
+            const url =
+              typeof input === "string"
+                ? input
+                : input instanceof Request
+                  ? input.url
+                  : input.toString();
+
+            if (url === HARDCODED_BOOKLIST_URL) {
+              return originalFetch(url);
             }
-            return await originalFetch(input, init);
-          } catch (err) {
-            console.error("fetch wrapper error", err);
-            throw err;
-          }
-        };
+
+            try {
+              if (input instanceof Request && init !== undefined) {
+                return originalFetch(input, init);
+              }
+
+              return originalFetch(input);
+            } catch (err) {
+              console.error("fetch wrapper error", err);
+              throw err;
+            }
+          };
+        }
       }
     } catch (err) {
       console.warn("Failed to install fetch wrapper", err);
     }
 
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   if (isMobile) {

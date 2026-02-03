@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import styles from "./Navbar.module.css";
 import Link from "next/link";
@@ -12,11 +11,8 @@ const links = [{ title: "Textbooks", link: "/textbooks" }];
 export default function Navbar() {
   const { toggle, isOpen } = usePdf();
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const pdfLabel = isOpen ? "Close PDF Viewer" : "Open PDF Viewer";
 
   return (
     <header className={styles.header}>
@@ -25,6 +21,7 @@ export default function Navbar() {
         blurIntensity={3}
         blurLayers={11}
       />
+
       <nav className={styles.navbar}>
         <div className={styles.navbarContent}>
           <Link href="/" className={styles.logo}>
@@ -48,19 +45,9 @@ export default function Navbar() {
           <button
             onClick={toggle}
             className={styles.navItem}
-            data-text={
-              mounted
-                ? isOpen
-                  ? "Close PDF Viewer"
-                  : "Open PDF Viewer"
-                : "Open PDF Viewer"
-            }
+            data-text={pdfLabel}
           >
-            {mounted
-              ? isOpen
-                ? "Close PDF Viewer"
-                : "Open PDF Viewer"
-              : "Open PDF Viewer"}
+            {pdfLabel}
           </button>
         </div>
       </nav>

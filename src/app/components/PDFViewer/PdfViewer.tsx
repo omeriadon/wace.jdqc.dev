@@ -15,27 +15,30 @@ const FALLBACK_WORKER =
 
 export default function PdfViewer() {
   const { files, activeFile, setActive, removeFile } = usePdf();
-  const [mounted, setMounted] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof window === "undefined") return "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  });
+
   const [workerUrl, setWorkerUrl] = useState<string | undefined>(
     DEFAULT_WORKER,
   );
 
   useEffect(() => {
-    setMounted(true);
-
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    setTheme(mq.matches ? "dark" : "light");
-
     const listener = (e: MediaQueryListEvent) =>
       setTheme(e.matches ? "dark" : "light");
-    mq.addEventListener("change", listener);
 
+    mq.addEventListener("change", listener);
     return () => mq.removeEventListener("change", listener);
   }, []);
 
   useEffect(() => {
     let cancelled = false;
+
     (async () => {
       try {
         const res = await fetch(DEFAULT_WORKER, { method: "HEAD" });
@@ -46,8 +49,8 @@ export default function PdfViewer() {
       } catch {}
 
       try {
-        const res2 = await fetch(FALLBACK_WORKER, { method: "HEAD" });
-        if (!cancelled && res2.ok) {
+        const res = await fetch(FALLBACK_WORKER, { method: "HEAD" });
+        if (!cancelled && res.ok) {
           setWorkerUrl(FALLBACK_WORKER);
           return;
         }
@@ -55,6 +58,7 @@ export default function PdfViewer() {
 
       if (!cancelled) setWorkerUrl(undefined);
     })();
+
     return () => {
       cancelled = true;
     };
@@ -76,6 +80,7 @@ export default function PdfViewer() {
           const Zoom = s.Zoom as React.ComponentType<unknown>;
           const ZoomIn = s.ZoomIn as React.ComponentType<unknown>;
           const ZoomOut = s.ZoomOut as React.ComponentType<unknown>;
+
           return (
             <div
               style={{ display: "flex", alignItems: "center", width: "100%" }}
@@ -114,7 +119,7 @@ export default function PdfViewer() {
     ),
   });
 
-  if (!mounted || files.length === 0) {
+  if (files.length === 0) {
     return (
       <div className={styles.container}>
         <div className={styles.emptyState}>No PDFs open</div>
