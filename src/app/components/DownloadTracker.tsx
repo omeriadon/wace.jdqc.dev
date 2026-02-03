@@ -37,7 +37,7 @@ export default function DownloadTracker({ className }: { className?: string }) {
   const formattedMoney = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(count * 73.45);
+  }).format(count * 96.45);
 
   return (
     <>
