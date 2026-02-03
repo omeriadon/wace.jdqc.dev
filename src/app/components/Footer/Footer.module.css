@@ -19,7 +19,7 @@
 .item {
   position: relative;
   color: var(--foreground);
-  text-shadow: 0 0 8px var(--foreground);
+  text-shadow: 0 0 12px var(--foreground);
   flex: 1 1 0px;
   white-space: nowrap;
 }
